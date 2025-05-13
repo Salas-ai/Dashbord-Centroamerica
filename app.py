@@ -24,13 +24,11 @@ ax.set_ylabel("Exportaciones (USD millones)")
 ax.set_title("Exportaciones en Centroamérica")
 plt.xticks(rotation=45)
 st.pyplot(fig)
-import streamlit as st
-import pandas as pd
 
 # Definir las rutas de los archivos CSV
-clientes_potenciales = r"D:\clientes_potenciales.csv"
-exportaciones_dispositivos = r"D:\exportaciones_dispositivos_medicos.csv"
-empresas_centroamerica = r"D:\empresas_centroamerica.csv"
+clientes_potenciales = "clientes_potenciales.csv"  # Ruta relativa si los archivos están en el mismo directorio
+exportaciones_dispositivos = "exportaciones_dispositivos_medicos.csv"
+empresas_centroamerica = "empresas_centroamerica.csv"
 
 # Cargar los archivos CSV en DataFrames
 df_clientes = pd.read_csv(clientes_potenciales)
@@ -51,4 +49,3 @@ st.dataframe(df_exportaciones)
 # Mostrar la tabla de empresas en Centroamérica
 st.subheader("Empresas en Centroamérica")
 st.dataframe(df_empresas)
-streamlit run app.py
