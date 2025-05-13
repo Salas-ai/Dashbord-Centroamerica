@@ -10,11 +10,17 @@ data = {
 
 df = pd.DataFrame(data)
 
-# Título del dashboard
+# Título del dashboard con emoji
 st.title("📊 Dashboard de Exportaciones en Centroamérica")
 
-# Mostrar datos
+# Mostrar tabla
 st.dataframe(df)
 
 # Gráfico de barras
-st.bar_chart(df.set_index('País'))
+fig, ax = plt.subplots()
+ax.bar(df['País'], df['Exportaciones (USD millones)'], color=['#2E86C1', '#5DADE2', '#85C1E9', '#AED6F1', '#D6EAF8', '#EBF5FB'])
+ax.set_xlabel("País")
+ax.set_ylabel("Exportaciones (USD millones)")
+ax.set_title("Exportaciones en Centroamérica")
+plt.xticks(rotation=45)
+st.pyplot(fig)
