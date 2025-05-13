@@ -60,12 +60,12 @@ st.pyplot(fig)
 
 # Leyenda mejorada y con formato
 st.markdown("""
-    ### 🌎 ¿Qué mercado explorar?
+    ### 🌍 ¿Qué mercado explorar?
     - **Estados Unidos**: El mercado es grande y se debe **mantener** con estrategias actuales.
     - **México**: Aunque el mercado es pequeño, se recomienda **explorar** nuevas oportunidades.
-    - **Colombia**: A pesar del tamaño, es un mercado que puede ser clave en el futuro, se debe **explorar**.
-    - **Brasil**: El mercado sigue siendo fuerte, por lo que debe **mantenerse** con las estrategias actuales.
-    - **Argentina**: El mercado es pequeño, pero con un enfoque adecuado se pueden encontrar **nuevas oportunidades**.
+    - **Colombia**: Mercado intermedio, **explorar** nuevas posibilidades de mercado.
+    - **Brasil**: Mercado consolidado, debe **mantenerse** con la estrategia actual.
+    - **Argentina**: Mercado pequeño, se recomienda **explorar** otros segmentos o mercados.
 """)
 
 # Agregar una visualización interactiva y mejorar la presentación
@@ -80,4 +80,5 @@ st.markdown("""
 
 # Visualización más atractiva
 st.markdown("#### 📊 Gráfico de los criterios para explorar y mantener mercados")
+
 
