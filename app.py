@@ -70,3 +70,18 @@ ax_exportaciones.set_ylabel("Exportaciones (USD millones)")
 ax_exportaciones.set_title("Exportaciones de Dispositivos Médicos por País")
 plt.xticks(rotation=45)
 st.pyplot(fig_exportaciones)
+
+# Criterios de Decisión Estratégica
+
+# Comparar los mercados actuales con los mercados potenciales
+st.subheader("🌎 Criterios para Expandir o Mantener Mercados")
+for index, row in df_exportaciones.iterrows():
+    current_market = row['Exportaciones (USD millones)']
+    country = row['País']
+    potential_market = df_segmentos.loc[df_segmentos['País'] == country, 'Tamaño del Mercado (USD millones)'].values[0]
+
+    # Decisión
+    if potential_market > current_market:
+        st.write(f"🌍 **Explorar nuevo mercado en {country}**: El mercado potencial ({potential_market} USD) es mayor que el actual ({current_market} USD).")
+    else:
+        st.write(f"✅ **Mantener mercado en {country}**: El mercado actual ({current_market} USD) es suficiente para mantener la relevancia.")
