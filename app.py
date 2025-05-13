@@ -2,6 +2,14 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 
+# Datos de ejemplo para exportaciones
+data_exportaciones = {
+    'País': ['Costa Rica', 'El Salvador', 'Guatemala', 'Honduras', 'Panamá'],
+    'Exportaciones (USD millones)': [4291.2, 1416.4, 10450.0, 3440.0, 8768.0]
+}
+
+df_exportaciones = pd.DataFrame(data_exportaciones)
+
 # Datos de ejemplo para segmentar mercados
 data_segmentos = {
     'País': ['Estados Unidos', 'México', 'Colombia', 'Brasil', 'Argentina'],
@@ -11,8 +19,24 @@ data_segmentos = {
 
 df_segmentos = pd.DataFrame(data_segmentos)
 
-# Título con imagen de fondo
-st.title("🌍 Criterios para Expandir o Mantener Mercados")
+# Título con emoji
+st.title("📊 Dashboard de Exportaciones en Centroamérica")
+
+# Mostrar la tabla de exportaciones
+st.subheader("Exportaciones de Dispositivos Médicos")
+st.dataframe(df_exportaciones)
+
+# Gráfico de barras con las exportaciones
+fig, ax = plt.subplots(figsize=(10, 6))
+ax.bar(df_exportaciones['País'], df_exportaciones['Exportaciones (USD millones)'], color=['#2E86C1', '#5DADE2', '#85C1E9', '#AED6F1', '#D6EAF8'])
+ax.set_xlabel("País")
+ax.set_ylabel("Exportaciones (USD millones)")
+ax.set_title("Exportaciones de Dispositivos Médicos en Centroamérica")
+plt.xticks(rotation=45)
+st.pyplot(fig)
+
+# Criterios para expandir o mantener mercados
+st.markdown("### 🌎 Criterios para Expandir o Mantener Mercados")
 
 # Mostrar criterios con una tabla más atractiva
 st.subheader("Criterios por País")
@@ -25,7 +49,6 @@ st.markdown("""
     - **Explorar Nuevos Mercados**: El tamaño del mercado es pequeño y se recomienda investigar la posibilidad de expansión.
 """)
 
-# Agregar una visualización interactiva
 # Gráfico de barras con los tamaños de mercado
 fig, ax = plt.subplots(figsize=(10, 6))
 ax.bar(df_segmentos['País'], df_segmentos['Tamaño del Mercado (USD millones)'], color=['#58D68D', '#F7DC6F', '#F39C12', '#D35400', '#E74C3C'])
@@ -45,5 +68,16 @@ st.markdown("""
     - **Argentina**: El mercado es pequeño, pero con un enfoque adecuado se pueden encontrar **nuevas oportunidades**.
 """)
 
-# Establecer fondo visual o gráficos de contexto si es necesario
+# Agregar una visualización interactiva y mejorar la presentación
+st.markdown("""
+    ### 🌍 Resultados de la Evaluación de Mercados:
+    - **Estados Unidos**: El mercado tiene un tamaño considerable, mantener y expandir con estrategias de diversificación.
+    - **México**: Mercado más pequeño, se recomienda explorar otros segmentos o mercados.
+    - **Colombia**: Mercado intermedio, explorar nuevas posibilidades de mercado.
+    - **Brasil**: Mercado consolidado, continuar con la estrategia actual.
+    - **Argentina**: Potencial de crecimiento, explorar segmentos alternativos.
+""")
+
+# Visualización más atractiva
+st.markdown("#### 📊 Gráfico de los criterios para explorar y mantener mercados")
 
