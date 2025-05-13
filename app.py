@@ -24,3 +24,31 @@ ax.set_ylabel("Exportaciones (USD millones)")
 ax.set_title("Exportaciones en Centroamérica")
 plt.xticks(rotation=45)
 st.pyplot(fig)
+import streamlit as st
+import pandas as pd
+
+# Definir las rutas de los archivos CSV
+clientes_potenciales = r"D:\clientes_potenciales.csv"
+exportaciones_dispositivos = r"D:\exportaciones_dispositivos_medicos.csv"
+empresas_centroamerica = r"D:\empresas_centroamerica.csv"
+
+# Cargar los archivos CSV en DataFrames
+df_clientes = pd.read_csv(clientes_potenciales)
+df_exportaciones = pd.read_csv(exportaciones_dispositivos)
+df_empresas = pd.read_csv(empresas_centroamerica)
+
+# Mostrar las tablas en el dashboard
+st.title("Dashboard de Exportaciones y Empresas en Centroamérica")
+
+# Mostrar la tabla de clientes potenciales
+st.subheader("Clientes Potenciales")
+st.dataframe(df_clientes)
+
+# Mostrar la tabla de exportaciones
+st.subheader("Exportaciones de Dispositivos Médicos")
+st.dataframe(df_exportaciones)
+
+# Mostrar la tabla de empresas en Centroamérica
+st.subheader("Empresas en Centroamérica")
+st.dataframe(df_empresas)
+streamlit run app.py
