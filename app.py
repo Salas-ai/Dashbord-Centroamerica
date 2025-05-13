@@ -1,84 +1,101 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+import requests
 
-# Datos de ejemplo para exportaciones
-data_exportaciones = {
-    'País': ['Costa Rica', 'El Salvador', 'Guatemala', 'Honduras', 'Panamá'],
-    'Exportaciones (USD millones)': [4291.2, 1416.4, 10450.0, 3440.0, 8768.0]
-}
+# Función para obtener datos de exportaciones de dispositivos médicos desde la API UN COMTRADE
+def get_export_data():
+    url = 'https://comtradeapi.un.org/public/v1/preview'
+    params = {
+        'typeCode': 'C',  # Tipo de comercio (exportaciones)
+        'reporterCode': '842',  # Código para Estados Unidos
+        'partnerCode': '0',  # '0' significa todos los países
+        'productCode': '9018',  # Código de productos de dispositivos médicos
+        'startDate': '2010',
+        'endDate': '2021',
+        'frequencyCode': 'A',  # Datos anuales
+    }
+    response = requests.get(url, params=params)
+    data = response.json()
+    
+    if 'data' in data:
+        df = pd.json_normalize(data['data'])
+        return df
+    else:
+        st.error("No se pudieron obtener los datos de exportaciones.")
+        return pd.DataFrame()
 
-df_exportaciones = pd.DataFrame(data_exportaciones)
+# Cargar los datos desde la API
+df_exportaciones_api = get_export_data()
 
-# Datos de ejemplo para segmentar mercados
+# Datos de Segmentos de Clientes
 data_segmentos = {
     'País': ['Estados Unidos', 'México', 'Colombia', 'Brasil', 'Argentina'],
-    'Tamaño del Mercado (USD millones)': [5000, 1500, 1200, 3000, 700],
-    'Criterio': ['Mantener Mercado Actual', 'Explorar Nuevos Mercados', 'Explorar Nuevos Mercados', 'Mantener Mercado Actual', 'Explorar Nuevos Mercados']
+    'Segmento de Clientes': ['Hospitales', 'Clínicas', 'Consultorios', 'Gobiernos', 'Distribuidores'],
+    'Tamaño del Mercado (USD millones)': [5000, 1500, 1200, 3000, 700]
 }
 
 df_segmentos = pd.DataFrame(data_segmentos)
 
-# Título con emoji
-st.title("📊 Dashboard de Exportaciones en Centroamérica")
+# Datos de Empresas
+data_empresas = {
+    'Empresa': ['Meditech', 'BioMed', 'HealthPro', 'MediDevices', 'GlobalHealth'],
+    'País': ['Costa Rica', 'El Salvador', 'Guatemala', 'Honduras', 'Panamá'],
+    'Productos': ['Dispositivos Médicos', 'Equipos de Diagnóstico', 'Monitores de Pacientes', 'Sistemas de Esterilización', 'Sillas de Ruedas'],
+    'Relevancia': [95, 87, 80, 65, 90]
+}
 
-# Mostrar la tabla de exportaciones
-st.subheader("Exportaciones de Dispositivos Médicos")
-st.dataframe(df_exportaciones)
+df_empresas = pd.DataFrame(data_empresas)
+
+# Título del dashboard con emoji
+st.title("📊 Dashboard de Exportaciones y Empresas en Centroamérica")
+
+# Mostrar la tabla de exportaciones desde API
+st.subheader("Exportaciones de Dispositivos Médicos (Datos desde API)")
+if not df_exportaciones_api.empty:
+    st.dataframe(df_exportaciones_api)
 
 # Gráfico de barras con las exportaciones
 fig, ax = plt.subplots(figsize=(10, 6))
-ax.bar(df_exportaciones['País'], df_exportaciones['Exportaciones (USD millones)'], color=['#2E86C1', '#5DADE2', '#85C1E9', '#AED6F1', '#D6EAF8'])
+ax.bar(df_exportaciones_api['reporterLabel'], df_exportaciones_api['TradeValue'], color=['#2E86C1', '#5DADE2', '#85C1E9', '#AED6F1', '#D6EAF8'])
 ax.set_xlabel("País")
 ax.set_ylabel("Exportaciones (USD millones)")
-ax.set_title("Exportaciones de Dispositivos Médicos en Centroamérica")
+ax.set_title("Exportaciones de Dispositivos Médicos en Centroamérica desde API")
 plt.xticks(rotation=45)
 st.pyplot(fig)
 
-# Criterios para expandir o mantener mercados
-st.markdown("### 🌎 Criterios para Expandir o Mantener Mercados")
+# Mostrar tabla de segmentos de clientes
+st.subheader("Segmentos de Clientes y Tamaño del Mercado")
+st.dataframe(df_segmentos)
 
-# Mostrar criterios con una tabla más atractiva
-st.subheader("Criterios por País")
-st.table(df_segmentos)
-
-# Agregar una leyenda visual interactiva
-st.markdown("""
-    **Explicación de los criterios:**
-    - **Mantener Mercado Actual**: El mercado tiene un tamaño considerable y se recomienda continuar con la estrategia actual.
-    - **Explorar Nuevos Mercados**: El tamaño del mercado es pequeño y se recomienda investigar la posibilidad de expansión.
-""")
-
-# Gráfico de barras con los tamaños de mercado
-fig, ax = plt.subplots(figsize=(10, 6))
-ax.bar(df_segmentos['País'], df_segmentos['Tamaño del Mercado (USD millones)'], color=['#58D68D', '#F7DC6F', '#F39C12', '#D35400', '#E74C3C'])
-ax.set_xlabel("País")
-ax.set_ylabel("Tamaño del Mercado (USD millones)")
-ax.set_title("Tamaño del Mercado de Dispositivos Médicos por País")
+# Gráfico de tamaño de mercado
+fig2, ax2 = plt.subplots(figsize=(10, 6))
+ax2.bar(df_segmentos['País'], df_segmentos['Tamaño del Mercado (USD millones)'], color=['#F39C12', '#F1C40F', '#E67E22', '#D35400', '#E74C3C'])
+ax2.set_xlabel("País")
+ax2.set_ylabel("Tamaño del Mercado (USD millones)")
+ax2.set_title("Tamaño de Mercado de Dispositivos Médicos")
 plt.xticks(rotation=45)
-st.pyplot(fig)
+st.pyplot(fig2)
 
-# Leyenda mejorada y con formato
-st.markdown("""
-    ### 🌍 ¿Qué mercado explorar?
-    - **Estados Unidos**: El mercado es grande y se debe **mantener** con estrategias actuales.
-    - **México**: Aunque el mercado es pequeño, se recomienda **explorar** nuevas oportunidades.
-    - **Colombia**: Mercado intermedio, **explorar** nuevas posibilidades de mercado.
-    - **Brasil**: Mercado consolidado, debe **mantenerse** con la estrategia actual.
-    - **Argentina**: Mercado pequeño, se recomienda **explorar** otros segmentos o mercados.
-""")
+# Criterios para Expansión o Mantenimiento de Mercados
+st.subheader("Criterios para Expandir o Mantener Mercados")
 
-# Agregar una visualización interactiva y mejorar la presentación
-st.markdown("""
-    ### 🌍 Resultados de la Evaluación de Mercados:
-    - **Estados Unidos**: El mercado tiene un tamaño considerable, mantener y expandir con estrategias de diversificación.
-    - **México**: Mercado más pequeño, se recomienda explorar otros segmentos o mercados.
-    - **Colombia**: Mercado intermedio, explorar nuevas posibilidades de mercado.
-    - **Brasil**: Mercado consolidado, continuar con la estrategia actual.
-    - **Argentina**: Potencial de crecimiento, explorar segmentos alternativos.
-""")
+# Mostrar criterios para cada país
+for country, size in zip(df_segmentos['País'], df_segmentos['Tamaño del Mercado (USD millones)']):
+    if size >= 3000:
+        st.write(f"**{country}**: El mercado es grande y se debe **mantener** con estrategias actuales.")
+    elif size >= 1200:
+        st.write(f"**{country}**: Aunque el mercado es pequeño, se recomienda **explorar** nuevas oportunidades.")
+    else:
+        st.write(f"**{country}**: El mercado es pequeño, pero con un enfoque adecuado se pueden encontrar **nuevas oportunidades**.")
 
-# Visualización más atractiva
-st.markdown("#### 📊 Gráfico de los criterios para explorar y mantener mercados")
-
+# Gráfico interactivo
+st.subheader("Gráfico de los Criterios para Explorar y Mantener Mercados")
+fig3, ax3 = plt.subplots(figsize=(10, 6))
+ax3.bar(df_segmentos['País'], df_segmentos['Tamaño del Mercado (USD millones)'], color=['#2ECC71', '#3498DB', '#9B59B6', '#F1C40F', '#E74C3C'])
+ax3.set_xlabel("País")
+ax3.set_ylabel("Tamaño del Mercado (USD millones)")
+ax3.set_title("Tamaño del Mercado y Estrategias por País")
+plt.xticks(rotation=45)
+st.pyplot(fig3)
 
